@@ -2095,61 +2095,9 @@ function abiertas($clave, $anio)
 	return $outputArray;
 }
 
-/* ABIERTAS POR DEPARTAMENTO */
-/* function preguntas_abiertas_depto($departamento, $razon_social)
-{
-	global $dbConnection;
-	$data = array();
-
-	// Primera consulta
-	$q = "SELECT YEAR
-				( CH_evaluacion_desempeno.fecha_alta ) AS anio,
-				CH_base_ev_desempeno.departamento
-			FROM
-				CH_evaluacion_desempeno
-				INNER JOIN CH_base_ev_desempeno ON CH_evaluacion_desempeno.clave_evaluada = CH_base_ev_desempeno.clave_registro 
-			WHERE
-				CH_base_ev_desempeno.departamento =:departamento
-				AND CH_evaluacion_desempeno.estatus = 0 GROUP BY CH_base_ev_desempeno.departamento";
-	$stmt = $dbConnection->prepare($q);
-	$stmt->execute(array(':departamento' => $departamento));
-
-	// Si no hay resultados, ejecutamos la segunda consulta
-	if ($stmt->rowCount() == 0) {
-		$q = "SELECT YEAR
-				( CH_evaluacion_desempeno.fecha_alta ) AS anio,
-				CH_base_ev_deptos_especiales.departamento_especial 
-			FROM
-				CH_evaluacion_desempeno
-				INNER JOIN CH_base_ev_desempeno ON CH_evaluacion_desempeno.clave_evaluada = CH_base_ev_desempeno.clave_registro
-				INNER JOIN CH_base_ev_deptos_especiales ON CH_evaluacion_desempeno.clave_evaluada = CH_base_ev_deptos_especiales.clave_registro 
-			WHERE
-				CH_base_ev_deptos_especiales.departamento_especial =:departamento
-				AND CH_evaluacion_desempeno.estatus = 0 
-			GROUP BY
-				CH_base_ev_deptos_especiales.departamento_especial";
-
-		$stmt = $dbConnection->prepare($q);
-		$stmt->execute(array(':departamento' => $departamento));
-	}
-
-	// Procesar resultados de ambas consultas
-	if ($stmt->rowCount() > 0) {
-		foreach ($stmt as $d) {
-			$anio = $d['anio'];
-			$pa = abiertas_depto($departamento, $anio, $razon_social);
-			// Acumulamos resultados de funcion2 en $data
-			$data = array_merge($data, $pa);
-		}
-	}
-
-	return $data;
-} */
-
 function preguntas_abiertas_depto($departamento, $razon_social) //abiertas_depto($departamento, $anio, $razon_social)
 {
-	global $dbConnection;
-	$anio = 2024;
+	global $dbConnection, $anio;
 	$data = array();
 	//SI ES SERVICIOS GENERALES, SEPARAR A LOS EMPLEADOS POR ITL Y CEL
 	if ($departamento == 'SERVICIOS GENERALES' && $razon_social == 'ITL') {
